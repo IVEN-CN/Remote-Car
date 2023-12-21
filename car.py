@@ -2,9 +2,9 @@
 树莓派与驱动板的连接方式：(BCM编码方式)
     1. 5V -> 5V
     2. GND -> GND
-    3. GPIO2 -> IN1
-    4. GPIO3 -> IN2
-    5. GPIO4 -> IN3
+    3. GPIO18 -> IN1
+    4. GPIO23 -> IN2
+    5. GPIO24 -> IN3
     6. GPIO17 -> IN4
     7. GPIO27 -> ENA
     8. GPIO22 -> ENB
@@ -15,9 +15,9 @@
     3. GPIO10 -> IN1
     4. GPIO9 -> IN2
     5. GPIO11 -> IN3
-    6. GPIO0 -> IN4
-    7. GPIO5 -> ENA
-    8. GPIO6 -> ENB
+    6. GPIO5 -> IN4
+    7. GPIO6 -> ENA
+    8. GPIO13 -> ENB
 
 其中哪些针脚控制哪几个电机：
     1. ENA -> 控制左边的2个电机
