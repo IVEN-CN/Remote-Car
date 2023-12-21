@@ -1,3 +1,13 @@
+"""遥控小车的遥控器
+树莓派读取MPU6050的数据，通过蓝牙发送给小车
+
+MPU和树莓派（全志派）的连接方式：
+    MPU-6050 VCC连接到树莓派的3.3V
+    MPU-6050 GND连接到树莓派的GND
+    MPU-6050 SDA连接到树莓派的SDA（GPIO2）
+    MPU-6050 SCL连接到树莓派的SCL（GPIO3）
+"""
+
 import smbus
 import bluetooth
 import time
