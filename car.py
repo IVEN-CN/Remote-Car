@@ -44,22 +44,26 @@ class Car:
         # endregion
 
         # region 初始化引脚
+        # wheel:left1
         self.left_IN1 = 18
         self.left_IN2 = 23
+        # wheel:left2
         self.left_IN3 = 24
         self.left_IN4 = 17
+
         self.left_ENA = 27
         self.left_ENB = 22
 
+        # wheel:right1
         self.right_IN1 = 10
         self.right_IN2 = 9
+        # wheel:right2
         self.right_IN3 = 11
         self.right_IN4 = 5
+
         self.right_ENA = 6
         self.right_ENB = 13
-        # endregion
 
-        # region 初始化PWM
         GPIO.setmode(GPIO.BCM) # 以BCM编码格式
         GPIO.setwarnings(False)
         GPIO.setup(self.left_IN1,GPIO.OUT)
@@ -77,3 +81,34 @@ class Car:
         GPIO.setup(self.right_ENB,GPIO.OUT)
         # endregion
 
+        # region 创建PWM对象
+        self.left1_pwm = GPIO.PWM(self.left_ENA, 100)
+        self.left2_pwm = GPIO.PWM(self.left_ENB, 100)
+
+        self.right1_pwm = GPIO.PWM(self.right_ENA, 100)
+        self.right2_pwm = GPIO.PWM(self.right_ENB, 100)
+
+        # 启动PWM，初始占空比为0
+        self.left1_pwm.start(0)
+        self.left2_pwm.start(0)
+        self.right1_pwm.start(0)
+        self.right2_pwm.start(0)
+        # endregion
+
+    def move(self, wheel, diraction, gyro_imformation:tuple):
+        """
+        控制小车运动
+            wheel: left1, left2, right1, right2
+            diraction: forward, backward, stop
+        """
+        choices = {'left1':(self.left_IN1, self.left_IN2),
+                  'left2':(self.left_IN3, self.left_IN4),
+                  'right1':(self.right_IN1, self.right_IN2),
+                  'right2':(self.right_IN3, self.right_IN4)}
+        diractions = {'forward':(GPIO.HIGH, GPIO.LOW),
+                     'backward':(GPIO.LOW, GPIO.HIGH),
+                     'stop':(GPIO.LOW, GPIO.LOW)}
+        
+        GPIO.output(choices[wheel][0], diractions[diraction][0])
+        GPIO.output(choices[wheel][1], diractions[diraction][1])
+        
