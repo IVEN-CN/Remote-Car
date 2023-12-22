@@ -35,9 +35,26 @@ import smbus
 
 class Car:
     def __init__(self):
-        # 初始化蓝牙
+        # region 初始化蓝牙
         self.server_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
         self.port = 1
         self.server_sock.bind(("",self.port))   # 绑定端口
         self.server_sock.listen(1)  # 监听客户端的连接请求
         self.client_sock= self.server_sock.accept()[0] # 接收客户端的连接请求，返回客户端socket和地址
+        # endregion
+
+        # region 初始化引脚
+        self.left_IN1 = 18
+        self.left_IN2 = 23
+        self.left_IN3 = 24
+        self.left_IN4 = 17
+        self.left_ENA = 27
+        self.left_ENB = 22
+
+        self.right_IN1 = 10
+        self.right_IN2 = 9
+        self.right_IN3 = 11
+        self.right_IN4 = 5
+        self.right_ENA = 6
+        self.right_ENB = 13
+        # endregion
