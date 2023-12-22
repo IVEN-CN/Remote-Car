@@ -58,3 +58,22 @@ class Car:
         self.right_ENA = 6
         self.right_ENB = 13
         # endregion
+
+        # region 初始化PWM
+        GPIO.setmode(GPIO.BCM) # 以BCM编码格式
+        GPIO.setwarnings(False)
+        GPIO.setup(self.left_IN1,GPIO.OUT)
+        GPIO.setup(self.left_IN2,GPIO.OUT)
+        GPIO.setup(self.left_IN3,GPIO.OUT)
+        GPIO.setup(self.left_IN4,GPIO.OUT)
+        GPIO.setup(self.left_ENA,GPIO.OUT)
+        GPIO.setup(self.left_ENB,GPIO.OUT)
+
+        GPIO.setup(self.right_IN1,GPIO.OUT)
+        GPIO.setup(self.right_IN2,GPIO.OUT)
+        GPIO.setup(self.right_IN3,GPIO.OUT)
+        GPIO.setup(self.right_IN4,GPIO.OUT)
+        GPIO.setup(self.right_ENA,GPIO.OUT)
+        GPIO.setup(self.right_ENB,GPIO.OUT)
+        # endregion
+
