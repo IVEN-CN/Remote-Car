@@ -95,20 +95,49 @@ class Car:
         self.right2_pwm.start(0)
         # endregion
 
-    def move(self, wheel, diraction, gyro_imformation:tuple):
+    def move(self, yaw: float, pitch: float, roll: float):
+        """根据角度控制小车运动
+        pitch：俯仰角
+        roll：滚动角
+        yaw：偏航角
         """
-        控制小车运动
-            wheel: left1, left2, right1, right2
-            diraction: forward, backward, stop
-        """
-        choices = {'left1':(self.left_IN1, self.left_IN2),
-                  'left2':(self.left_IN3, self.left_IN4),
-                  'right1':(self.right_IN1, self.right_IN2),
-                  'right2':(self.right_IN3, self.right_IN4)}
-        diractions = {'forward':(GPIO.HIGH, GPIO.LOW),
-                     'backward':(GPIO.LOW, GPIO.HIGH),
-                     'stop':(GPIO.LOW, GPIO.LOW)}
         
-        GPIO.output(choices[wheel][0], diractions[diraction][0])
-        GPIO.output(choices[wheel][1], diractions[diraction][1])
+        if pitch < 0:
+            """向前运动"""
+            # region 调整正反转
+            GPIO.output(self.left_IN1, GPIO.HIGH)
+            GPIO.output(self.left_IN2, GPIO.LOW)
+            GPIO.output(self.left_IN3, GPIO.HIGH)
+            GPIO.output(self.left_IN4, GPIO.LOW)
+            GPIO.output(self.right_IN1, GPIO.HIGH)
+            GPIO.output(self.right_IN2, GPIO.LOW)
+            GPIO.output(self.right_IN3, GPIO.HIGH)
+            GPIO.output(self.right_IN4, GPIO.LOW)
+            # endregion
+
+            # region 调整占空比
+            self.left1_pwm.ChangeDutyCycle(abs(pitch))
+            self.left2_pwm.ChangeDutyCycle(abs(pitch))
+            self.right1_pwm.ChangeDutyCycle(abs(pitch))
+            self.right2_pwm.ChangeDutyCycle(abs(pitch))
+            # endregion
+        elif pitch > 0:
+            """向后运动"""
+            # region 调整正反转
+            GPIO.output(self.left_IN1, GPIO.LOW)
+            GPIO.output(self.left_IN2, GPIO.HIGH)
+            GPIO.output(self.left_IN3, GPIO.LOW)
+            GPIO.output(self.left_IN4, GPIO.HIGH)
+            GPIO.output(self.right_IN1, GPIO.LOW)
+            GPIO.output(self.right_IN2, GPIO.HIGH)
+            GPIO.output(self.right_IN3, GPIO.LOW)
+            GPIO.output(self.right_IN4, GPIO.HIGH)
+            # endregion
+
+            # region 调整占空比
+            self.left1_pwm.ChangeDutyCycle(abs(pitch))
+            self.left2_pwm.ChangeDutyCycle(abs(pitch))
+            self.right1_pwm.ChangeDutyCycle(abs(pitch))
+            self.right2_pwm.ChangeDutyCycle(abs(pitch))
+            # endregion
         
