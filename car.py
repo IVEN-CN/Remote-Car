@@ -12,12 +12,12 @@
 要连接2个驱动板，第二个驱动板的连接方式：
     1. 5V -> 5V
     2. GND -> GND
-    3. GPIO10 -> IN1
-    4. GPIO9 -> IN2
-    5. GPIO11 -> IN3
-    6. GPIO5 -> IN4
-    7. GPIO6 -> ENA
-    8. GPIO13 -> ENB
+    3. GPIO5 -> IN1
+    4. GPIO6 -> IN2
+    5. GPIO13 -> IN3
+    6. GPIO19 -> IN4
+    7. GPIO26 -> ENA
+    8. GPIO20 -> ENB
 
 其中哪些针脚控制哪几个电机：
     1. ENA -> 控制左边的2个电机
@@ -55,14 +55,14 @@ class Car:
         self.left_ENB = 22
 
         # wheel:right1
-        self.right_IN1 = 10
-        self.right_IN2 = 9
+        self.right_IN1 = 5
+        self.right_IN2 = 6
         # wheel:right2
-        self.right_IN3 = 11
-        self.right_IN4 = 5
+        self.right_IN3 = 13
+        self.right_IN4 = 19
 
-        self.right_ENA = 6
-        self.right_ENB = 13
+        self.right_ENA = 26
+        self.right_ENB = 20
 
         GPIO.setmode(GPIO.BCM) # 以BCM编码格式
         GPIO.setwarnings(False)
@@ -81,7 +81,7 @@ class Car:
         GPIO.setup(self.right_ENB,GPIO.OUT)
         # endregion
 
-        # region 创建PWM对象
+        # region 创建PWM对象，100是频率，单位Hz，取决于电机的额定值
         self.left1_pwm = GPIO.PWM(self.left_ENA, 100)
         self.left2_pwm = GPIO.PWM(self.left_ENB, 100)
 
