@@ -1,11 +1,18 @@
 """GY25陀螺仪读取角度测试文件"""
 import serial
 import struct
+import os
 
 class GY25:
-    def __init__(self, port='/dev/ttyS0', baudrate=115200):
+    def __init__(self, port='/dev/ttyS5', baudrate=115200):
         self.ser = serial.Serial(port, baudrate)
-        self.ser.write(bytes.fromhex('A5'))  # 设置为角度输出模式
+        self.ser.write(bytes.fromhex('A5'))  
+        self.ser.write(bytes.fromhex('54'))
+
+        self.ser.write(bytes.fromhex('A5'))  
+        self.ser.write(bytes.fromhex('55'))
+         
+        self.ser.write(bytes.fromhex('A5'))  
         self.ser.write(bytes.fromhex('52')) 
 
     def read_angle(self):
@@ -18,5 +25,8 @@ class GY25:
             
 if __name__ == '__main__':
     gy25 = GY25()
-    yaw, pitch, roll = gy25.read_angle()
-    print('偏航角:', yaw, '俯仰角:', pitch, '滚动角:', roll)
+    while True:
+        yaw, pitch, roll = gy25.read_angle()
+        result = '偏航角:', yaw, '俯仰角:', pitch, '滚动角:', roll
+        os.system('clear')
+        print(result)
