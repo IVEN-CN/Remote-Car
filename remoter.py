@@ -2,10 +2,10 @@
 荔枝派读取GY25的数据，通过蓝牙发送给小车
 
 GY25与荔枝派的连接：
-GY25的VCC接荔枝派的3.3V
-GY25的GND接荔枝派的GND
-GY25的RXD接荔枝派的TXD
-GY25的TXD接荔枝派的RXD
+GY25的VCC接3.3V
+GY25的GND接GND
+GY25的RXD接TXD
+GY25的TXD接RXD
 """
 
 import bluetooth
