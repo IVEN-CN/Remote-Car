@@ -10,14 +10,6 @@ from PIL import ImageFont
 class GY25:
     def __init__(self, port='/dev/ttyS5', baudrate=115200):
         self.ser = serial.Serial(port, baudrate)
-        self.ser.write(bytes.fromhex('A5'))  
-        self.ser.write(bytes.fromhex('54'))
-
-        self.ser.write(bytes.fromhex('A5'))  
-        self.ser.write(bytes.fromhex('55'))
-         
-        self.ser.write(bytes.fromhex('A5'))  
-        self.ser.write(bytes.fromhex('52')) 
 
     def read_angle(self):
         while True:
