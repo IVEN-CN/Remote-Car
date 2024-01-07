@@ -12,12 +12,11 @@ class GY25:
         self.ser = serial.Serial(port, baudrate)
 
     def read_angle(self):
-        while True:
-            data = self.ser.read(8)  # 读取8个字节的数据
-            if len(data) == 8 and data[0] == 0xAA:  # 检查数据包的头部
-                yaw, pitch, roll = struct.unpack('<hhh', data[1:7])  # 解析数据包，<hhh表示3个16位整数
-                # 分别对应yaw、pitch、roll，数据类型为小端字节序，即低位在前，高位在后
-                return yaw / 100.0, pitch / 100.0, roll / 100.0  # 返回角度信息
+        data = self.ser.read(8)  # 读取8个字节的数据
+        if len(data) == 8 and data[0] == 0xAA:  # 检查数据包的头部
+            yaw, pitch, roll = struct.unpack('<hhh', data[1:7])  # 解析数据包
+            # 分别对应yaw、pitch、roll，数据类型为小端字节序，即低位在前，高位在后
+            return yaw / 100.0, pitch / 100.0, roll / 100.0  # 返回角度信息
 
 class OLED():
     def __init__(self, port, add) -> None:
@@ -37,6 +36,6 @@ if __name__ == '__main__':
     while True:
         yaw, pitch, roll = gy25.read_angle()
         os.system('clear')
-        print('偏航角:', yaw, '\n俯仰角:', pitch, '\n滚动角:', roll)
+        print(f'偏航角:{yaw}\n俯仰角:{pitch}\n滚动角:{roll}')
         # 在画布上绘制文本
-        oled.write_text('偏航角: %s\n俯仰角: %s\n滚动角: %s' % (yaw, pitch, roll))
+        oled.write_text(f'偏航角: {yaw}\n俯仰角: {pitch}\n滚动角: {roll}')
