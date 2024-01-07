@@ -20,9 +20,11 @@ class GY25:
                 return yaw / 100.0, pitch / 100.0, roll / 100.0  # 返回角度信息
 
 class OLED():
-    def __init__(self) -> None:
+    def __init__(self, port, add) -> None:
+        self.port = port
+        self.address = add
         # 创建一个I2C接口的实例
-        serial = i2c(port=1, address=0x36)
+        serial = i2c(port=self.port, address=self.address)
         self.device = ssd1306(serial)
         self.font = ImageFont.load_default()
     def write_text(self, text):
@@ -31,7 +33,7 @@ class OLED():
 
 if __name__ == '__main__':
     gy25 = GY25()
-    oled = OLED()
+    oled = OLED(3, 0x3C)
     while True:
         yaw, pitch, roll = gy25.read_angle()
         os.system('clear')
