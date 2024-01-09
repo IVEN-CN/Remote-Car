@@ -1,4 +1,6 @@
 import bluetooth
+import wiringpi as wp       # 引入香橙派的wireingpi库
+from wiringpi import GPIO   # 引入香橙派的GPIO库
 
 class Bluetooth:
     """蓝牙连接类"""
@@ -14,6 +16,26 @@ class Bluetooth:
     def close(self):
         """关闭连接"""
         self.sock.close()
+
+class LED:
+    def __init__(self, pin):
+        """香橙派的LED指示灯
+        pin：香橙派的引脚wpi编号，与LED的正极连接"""
+        self.pin = pin
+        wp.wiringPiSetupPhys()
+        wp.pinMode(self.pin, GPIO.OUTPUT)
+
+    def on(self):
+        wp.digitalWrite(self.pin, GPIO.HIGH)
+
+    def off(self):
+        wp.digitalWrite(self.pin, GPIO.LOW)
+
+    def blinl(self):
+        wp.digitalWrite(self.pin, GPIO.HIGH)
+        wp.delay(100)
+        wp.digitalWrite(self.pin, GPIO.LOW)
+        wp.delay(100)
 
 if __name__ == '__main__':
     bluetooth = Bluetooth()
