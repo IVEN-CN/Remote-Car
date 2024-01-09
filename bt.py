@@ -17,6 +17,9 @@ class Bluetooth:
         self.led.on()
         self.sock.send(data)
         self.led.off()
+    def read(self):
+        """读取数据"""
+        return self.sock.recv(1024)                            # 一次最多读取1024字节
     def close(self):
         """关闭连接"""
         self.sock.close()
