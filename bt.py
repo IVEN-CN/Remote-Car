@@ -10,9 +10,13 @@ class Bluetooth:
         self.port = 1                                           # 通信的频道，1是默认的频道
         self.sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM) # 创建一个客户端的socket
         self.sock.connect((self.serverMACAddress, self.port))   # 连接到服务器
+
+        self.led = LED(11)                                      # 初始化LED指示灯
     def send(self, data):
         """发送数据"""
+        self.led.on()
         self.sock.send(data)
+        self.led.off()
     def close(self):
         """关闭连接"""
         self.sock.close()
