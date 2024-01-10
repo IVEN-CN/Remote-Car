@@ -7,6 +7,8 @@ from luma.core.render import canvas
 from luma.oled.device import ssd1306
 from PIL import ImageFont
 import math
+import threading
+import time
 
 class GY25:
     def __init__(self, port='/dev/ttyS5', baudrate=115200):
@@ -23,11 +25,11 @@ class GY25:
             roll_ = struct.unpack('>h', data[5:7])
             # endregion
             yaw = yaw_[0]
-            pitch = pitch_[0]
-            roll = roll_[0]
+            roll = pitch_[0]
+            pitch = roll_[0]
 
             # 分别对应yaw、pitch、roll，数据类型为小端字节序，即低位在前，高位在后
-            return yaw / 100.0, pitch / 100.0, roll / 100.0  # 返回角度信息
+            return yaw / 100.0, -pitch / 100.0, roll / 100.0  # 返回角度信息
 
 class OLED():
     def __init__(self, port, add) -> None:
@@ -40,6 +42,8 @@ class OLED():
     def write_text(self, text):
         with canvas(self.device) as draw:
             draw.text((0, 0), text, font=self.font, fill="white")
+    def clear(self):
+        self.device.clear()
 
 def calculate_angle(pitch: int, roll: int):
     return math.sqrt(pitch**2 + roll**2)
@@ -47,13 +51,24 @@ def calculate_angle(pitch: int, roll: int):
 if __name__ == '__main__':
     gy25 = GY25()
     oled = OLED(3, 0x3C)
-    while True:
-        try:
-            yaw, pitch, roll = gy25.read_angle()
-        except:
-            continue
-        os.system('clear')
-        print(f'偏航角:{yaw}\n俯仰角:{pitch}\n滚动角:{roll}')
-        print(f'角度:{calculate_angle(pitch, roll)}')
+    def main():
+        global yaw, pitch, roll, angle
+        while True:
+            try:
+                yaw, pitch, roll = gy25.read_angle()
+                angle = calculate_angle(pitch, roll)
+            except:
+                continue
+            
+            os.system('clear')
+            print(f'偏航角:{yaw}\n俯仰角:{pitch}\n滚动角:{roll}')
+            print(f'角度:{angle}')
+    def write():
         # 在画布上绘制文本
-        oled.write_text(f'偏航角: {yaw}\n俯仰角: {pitch}\n滚动角: {roll}')
+        while True:
+            time.sleep(0.01)
+            oled.write_text(f' yaw: {yaw}\n pitch:{pitch}\n roll:{roll}\n angle:{angle}')
+    t1 = threading.Thread(target=main)
+    t2 = threading.Thread(target=write,daemon=True)
+    t1.start()
+    t2.start()
