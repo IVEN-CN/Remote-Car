@@ -16,8 +16,11 @@ if __name__ == '__main__':
     gy = GY25()
     remote_bluetooth = Bluetooth()
     while True:
-        # 读取数据,yaw:航向角，pitch:俯仰角，roll:滚动角
-        yaw, pitch, roll = gy.read_angle()
+        try:
+            # 读取数据,yaw:航向角，pitch:俯仰角，roll:滚动角
+            yaw, pitch, roll = gy.read_angle()
+        except:
+            continue
 
         # 姿态解算
         angle = calculate_angle(pitch, roll)
