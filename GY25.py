@@ -14,7 +14,13 @@ class GY25:
     def read_angle(self):
         data = self.ser.read(8)  # 读取8个字节的数据
         if len(data) == 8 and data[0] == 0xAA:  # 检查数据包的头部
-            yaw, pitch, roll = struct.unpack('<hhh', data[1:7])  # 解析数据包
+
+            # region 解析数据包
+            yaw = struct.unpack('<hhh', data[1:3])
+            pitch = struct.unpack('<hhh', data[3:5])
+            roll = struct.unpack('<hhh', data[5:7])
+            # endregion
+
             # 分别对应yaw、pitch、roll，数据类型为小端字节序，即低位在前，高位在后
             return yaw / 100.0, pitch / 100.0, roll / 100.0  # 返回角度信息
 
