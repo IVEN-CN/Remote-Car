@@ -1,17 +1,27 @@
 import bluetooth
 import wiringpi as wp       # 引入香橙派的wireingpi库
 from wiringpi import GPIO   # 引入香橙派的GPIO库
+from GY25 import OLED
 
 class Bluetooth:
     """蓝牙连接类"""
     def __init__(self,address='00:00:00:00:00:00'):
+        self.oled = OLED(3, 0x3C)
         """初始化蓝牙连接"""
-        self.serverMACAddress = address                         # 蓝牙模块的MAC地址
-        self.port = 1                                           # 通信的频道，1是默认的频道
-        self.sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM) # 创建一个客户端的socket
-        self.sock.connect((self.serverMACAddress, self.port))   # 连接到服务器
+        self.oled.write_text('connecting...')
+        while True:
+            try:
+                self.serverMACAddress = address                         # 蓝牙模块的MAC地址
+                self.port = 1                                           # 通信的频道，1是默认的频道
+                self.sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM) # 创建一个客户端的socket
+                self.sock.connect((self.serverMACAddress, self.port))   # 连接到服务器
+                break
+            except:
+                continue
+        self.oled.clear()
+        self.oled.write_text('connecting success!!')
 
-        self.led = LED(11)                                      # 初始化LED指示灯
+        self.led = LED(25)                                      # 初始化LED指示灯
     def send(self, data):
         """发送数据"""
         self.led.on()
