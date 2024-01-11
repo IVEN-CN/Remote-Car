@@ -12,24 +12,26 @@ import time
 
 class GY25:
     def __init__(self, port='/dev/ttyS5', baudrate=115200):
-        self.ser = serial.Serial(port, baudrate)
-
+        self.ser = serial.Serial(port, baudrate, timeout=1)
 
     def read_angle(self):
-        data = self.ser.read(8)  # 读取8个字节的数据
-        if len(data) == 8 and data[0] == 0xAA:  # 检查数据包的头部
+        try:
+            data = self.ser.read(8)  # 读取8个字节的数据
+            if len(data) == 8 and data[0] == 0xAA:  # 检查数据包的头部
 
-            # region 解析数据包
-            yaw_ = struct.unpack('>h', data[1:3])
-            pitch_ = struct.unpack('>h', data[3:5])
-            roll_ = struct.unpack('>h', data[5:7])
-            # endregion
-            yaw = yaw_[0]
-            roll = pitch_[0]
-            pitch = roll_[0]
+                # region 解析数据包
+                yaw_ = struct.unpack('>h', data[1:3])
+                pitch_ = struct.unpack('>h', data[3:5])
+                roll_ = struct.unpack('>h', data[5:7])
+                # endregion
+                yaw = yaw_[0]
+                roll = pitch_[0]
+                pitch = roll_[0]
 
-            # 分别对应yaw、pitch、roll，数据类型为小端字节序，即低位在前，高位在后
-            return yaw / 100.0, -pitch / 100.0, roll / 100.0  # 返回角度信息
+                # 分别对应yaw、pitch、roll，数据类型为小端字节序，即低位在前，高位在后
+                return yaw / 100.0, pitch / 100.0, roll / 100.0  # 返回角度信息
+        except serial.SerialException:
+            return None
 
 class OLED():
     def __init__(self, port, add) -> None:
@@ -54,21 +56,27 @@ if __name__ == '__main__':
     def main():
         global yaw, pitch, roll, angle
         while True:
-            try:
-                yaw, pitch, roll = gy25.read_angle()
+            a = gy25.read_angle()
+            if a is not None:
+                yaw, pitch, roll = a
                 angle = calculate_angle(pitch, roll)
-            except:
-                continue
-            
-            os.system('clear')
-            print(f'偏航角:{yaw}\n俯仰角:{pitch}\n滚动角:{roll}')
-            print(f'角度:{angle}')
+                
+                os.system('clear')
+                print(f'偏航角:{yaw}\n俯仰角:{pitch}\n滚动角:{roll}')
+                print(f'角度:{angle}')
+
+            else:
+                oled.write_text('timeoutERROR!!!')
+
     def write():
         # 在画布上绘制文本
         while True:
-            time.sleep(0.01)
-            oled.write_text(f' yaw: {yaw}\n pitch:{pitch}\n roll:{roll}\n angle:{angle}')
-    t1 = threading.Thread(target=main)
-    t2 = threading.Thread(target=write,daemon=True)
-    t1.start()
-    t2.start()
+            try:
+                time.sleep(0.01)
+                oled.write_text(f' yaw: {yaw}\n pitch:{pitch}\n roll:{roll}\n angle:{angle}')
+            except:
+                continue
+
+    threading.Thread(target=main).start()
+ 
+    threading.Thread(target=write,daemon=True).start()
